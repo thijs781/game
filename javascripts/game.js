@@ -1,69 +1,86 @@
-// CanMoveLeft
-//check if there is a space open 1 row up and 1 colum left.
+//all the required constants
+const express = require("express");
+const http = require("http");
+const cookies = require("cookie-parser");
+const bodyParser = require("body-parser");
 
-//need to define type pos and how to get rownr and colnr from it.
-function(pos){
-    var posr;
-    var posc;
-    var posl = new pos (posr,posc);
-    var inposl = $(posl).html();
-    if(inposl==null) return true;
-    else return false;
-}
 
-//CanTakeLeft
-//check if 1up,1left is enemy, then check if 2up,2left is open
-//if can take: check if can take left or right again.
 
-//CanMoveRight
-//check if ther is a space available 1 row up and 1 colum right. 
+var users = 0; //counts the amount of user on the site
+var activegames = 0; //keeps track of the amount of games being played
 
-//CanTakeRight
-//check if 1up,1right is enemy, then check if 2up,2right is open
-//if can take: check if can take left or right again.
 
-//MoveRight
-//if 1up 1right is available move there
 
-//TakeRight
-//if CanTakeRight: go 2up,2right and remove enemy, increment pieces_lost_enemy
+// give the player a cookie with an userId
+app.use(cookies("secur")); // this will encrypt cookies to avoid users tampering with them
+app.use(function(req, res, next) {
+	var userId = req.signedCookies.userId; //recieve cookie (if any), from the user
+	if(userId === undefined) { // check if the user has no cookie
+		userId = ++users; // give the user an userId
+		console.log("# Setting new cookie for user " + userId);
+		res.cookie("userId", userId, {signed: true, httpOnly: true}); //make the cookie
+	}
+	req.userId = parseInt(userId); // store the parsed userId for the next components
+    next(); // call on the next component
+})
+
+
+//update board
+//updates the board on the website
+/////////////////////////////////////////////////////////////////////////
+
+//Turn
+//shows whos turn it is
+//updates when player makes a turn
+//is akin to a main method
+/////////////////////////////////////////////////////////////////////////
+
+
+//CanLeft
+//up 1, left 1 == open
+//if false: up 2, left 2 == open
 
 //MoveLeft
-//if 1up 1left is available, move there
+//if open: up 1, left 1
+//if them: if open: up 2, left 2; then check if can hit again
+/////////////////////////////////////////////////////////////////////////
 
-//TakeLeft
-//if CanTakeLeft: go 2up,2left and remove enemy, increment pieces_lost_enemy
+//CanRight
+//up 1, right 1 == open
+//if false: up 2, right 2 == open
 
+//MoveRight
+//if open: up 1, right 1
+//if them: if open: up 2, right 2; then check if can hit again
+/////////////////////////////////////////////////////////////////////////
 
-
-// CanMoveLeftBack
-//check if there is a space open 1 row down and 1 colum left.
-
-//CanTakeLeftBack
-//check if 1down,1left is enemy, then check if 2down,2left is open
-//if can take: check if CanTakeLeftBack or CanTakeRightBack or CanTakeLeft or CanTakeRight again.
-
-//CanMoveRightBack
-//check if ther is a space available 1 row down and 1 colum right. 
-
-//CanTakeRightBack
-//check if 1down,1right is enemy, then check if 2down,2right is open
-//if can take: check if CanTakeLeftBack or CanTakeRightBack or CanTakeLeft or CanTakeRight again.
-
-//MoveRightBack
-//if 1down 1right is available move there
-
-//TakeRightBack
-//if CanTakeRight: go 2back,2right and remove enemy, increment pieces_lost_enemy
+//CanLeftBack
+//down 1, left 1 == open
+//if false: down 2, left 2 == open
 
 //MoveLeftBack
-//if 1back 1left is available, move there
+//if open: down 1, left 1
+//if them: if open: down 2, left 2; then check if can hit again
+/////////////////////////////////////////////////////////////////////////
 
-//TakeLeftBack
-//if CanTakeLeft: go 2down,2left and remove enemy, increment pieces_lost_enemy
+//CanRightBack
+//down 1, right 1 == open
+//if false: down 2, right 2 == open
+
+//MoveRightBack
+//if open: down 1, right 1
+//if them: if open: down 2, right 2; then check if can hit again
+/////////////////////////////////////////////////////////////////////////
 
 
-//implement movement for enemy next
+
+//creates the server and logs 'Server running....' !put at end of code!
+http.createServer(app).listen(3000, function(){
+    console.log("Server running....");
+})
+
+
+
 
 
 $("#rij1col1").html()

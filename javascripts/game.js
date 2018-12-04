@@ -27,12 +27,12 @@ app.use(function(req, res, next) {
 
 //update board
 //updates the board on the website
+//shows player 2 a rotated version
 /////////////////////////////////////////////////////////////////////////
 
 //Turn
 //shows whos turn it is
 //updates when player makes a turn
-//is akin to a main method
 /////////////////////////////////////////////////////////////////////////
 
 

@@ -1,8 +1,35 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 100x "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+td{
+  width: 80; 
+  height: 80;
 }
 
 a {
   color: #00B7FF;
+}
+
+.P2{ 
+  height: 50px; 
+  width: 50px; 
+  background-color: black; 
+  border-radius: 50%; 
+  display: inline-block; 
+} 
+.P1{ 
+  height: 50px; 
+  width: 50px; 
+  background-color: white; 
+  border-radius: 50%; 
+  display: inline-block; 
+} 
+
+.mov{
+    height: 50px; 
+    width: 50px; 
+    background-color: green; 
+    border-radius: 50%; 
+    display: inline-block; 
 }

@@ -1,7 +1,3 @@
-
-
-
-
 var TurnOf = 0; //keeps track of whos turn it is
 var PiecesLost1 = 0; //keeps track of the number of pieces Player 1 lost
 var PiecesLost2 = 0; //keeps track of the number of pieces Player 2 lost
@@ -38,44 +34,60 @@ function clearSquare(x,y){
 	$("#row"+y+"col"+x).empty();
 }
 
+//ClearOption
+function ClearOption(){
+	$("button").remove(".mov");
+}
 
 //CanLeft
 function CanLeft(x,y,player){
-	$("#movbut").remove();
 	var newx = x - 1;
 	if(newx>=0){
 		var newy = y - 1;
 		if(newy>=0){
 			if($("#row"+newy+"col"+newx).html() == "") {
 				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveLeft("+x+","+y+","+newx+","+newy+",false,"+player+")' class='mov'></button>");//make a button that let's the player do: MoveLeft(newx,newy,false,player)
-			} 
-			//if($("#row"+newy+"col"+newx) == pieceof(player)) return;
-			else {  //check if can take
-				newx--;
-				if(newx>=0){
-					newy--;
-					if(newy>=0){
-						if($("#row"+newy+"col"+newx).html() == "") { 
-							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveLeft("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
-							cantake = 1;
-						}
-					}
+			}
+			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')){//check if can take
+				CanTakeLeft(x,y,player);
+			}
+		}
+	}
+}
+
+//CanTakeLeft
+function CanTakeLeft(x,y,player){
+	var newx = x - 2;
+	var newy = y - 2;
+	if(newx>=0){
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") { 
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveLeft("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+				cantake = 1;
+				var tempx = newx - 1;
+				var tempy = newy - 1;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
+					CanTakeLeft(newx,newy,player);
+				}
+				tempx += 2;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take	
+					CanTakeRight(newx,newy,player);
 				}
 			}
 		}
 	}
 }
 
-
 //MoveLeft
 function MoveLeft(x,y,newx,newy,take,player){
 	//$("#movbut").remove();
-	$("#row"+newy+"col"+newx).html("<button id='2' align='center' onclick='CanLeft("+newx+","+newy+",1),CanRight("+newx+","+newy+",1)' class='P1'></button>");
+	$("#row"+newy+"col"+newx).html('<button id="2" align="center" onclick="ClearOption(),CanLeft('+newx+','+newy+','+player+'),CanRight('+newx+','+newy+','+player+')" class="P'+player+'"></button>');
 	$("#row"+y+"col"+x).empty();
 	if(take == true){
 		clearSquare(newx+1,newy+1);
 		pieceLost(opponentof(player));
 	}
+	$("#movbut").remove();
 }
 
 
@@ -89,13 +101,70 @@ function CanRight(x,y,player){
 				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveRight("+x+","+y+","+newx+","+newy+",false,"+player+")' class='mov'></button>");//make a button that let's the player do: MoveLeft(newx,newy,false,player)
 			} 
 			//if($("#row"+newy+"col"+newx) == pieceof(player)) return;
-			else {  //check if can take
-				newx++;
-				if(newx<8){
-					newy--;
+			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
+				CanTakeRight(x,y,player);
+			}
+		}
+	}
+}
+
+//CanTakeRight
+function CanTakeRight(x,y,player){
+	var newx = x + 2;
+	var newy = y - 2;
+	if(newx>=0){
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") { 
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>");
+				cantake = 1;
+				var tempx = newx - 1;
+				var tempy = newy - 1;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  
+					CanTakeLeft(newx,newy,player);
+				}
+				tempx += 2;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) { 	
+					CanTakeRight(newx,newy,player);
+				}
+			}
+		}
+	}
+}
+
+//MoveRight
+function MoveRight(x,y,newx,newy,take,player){
+	//$("#movbut").remove();
+	$("#row"+newy+"col"+newx).html('<button id="2" align="center" onclick="ClearOption(),CanLeft('+newx+','+newy+','+player+'),CanRight('+newx+','+newy+','+player+')" class="P'+player+'"></button>');
+	$("#row"+y+"col"+x).empty();
+	if(take == true){
+		clearSquare(newx-1,newy+1);
+		pieceLost(opponentof(player));
+	}
+	$("#movbut").remove();
+}
+
+
+
+
+
+
+//CanBackLeft
+function CanBackLeft(x,y,player){
+	var newx = x - 1;
+	if(newx>=0){
+		var newy = y + 1;
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") {
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackLeft("+x+","+y+","+newx+","+newy+",false,"+player+")' class='mov'></button>");//make a button that let's the player do: MoveLeft(newx,newy,false,player)
+			}
+
+			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')){//check if can take
+				newx--;
+				if(newx>=0){
+					newy++;
 					if(newy>=0){
 						if($("#row"+newy+"col"+newx).html() == "") { 
-							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackLeft("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
 							cantake = 1;
 						}
 					}
@@ -106,34 +175,57 @@ function CanRight(x,y,player){
 }
 
 
-//MoveRight
-function MoveRight(x,y,newx,newy,take,player){
+//MoveBackLeft
+function MoveBackLeft(x,y,newx,newy,take,player){
 	//$("#movbut").remove();
-	$("#row"+newy+"col"+newx).html("<button id='2' align='center' onclick='CanLeft("+newx+","+newy+",1),CanRight("+newx+","+newy+",1)' class='P1'></button>");
+	$("#row"+newy+"col"+newx).html('<button id="2" align="center" onclick="ClearOption(),CanBackLeft('+newx+','+newy+','+player+'),CanBackRight('+newx+','+newy+','+player+')" class="P'+player+'"></button>');
 	$("#row"+y+"col"+x).empty();
 	if(take == true){
-		clearSquare(newx+1,newy+1);
+		clearSquare(newx+1,newy-1);
 		pieceLost(opponentof(player));
+	}
+	$("#movbut").remove();
+}
+
+
+//CanBackRight
+function CanBackRight(x,y,player){
+	var newx = x + 1;
+	if(newx<8){
+		var newy = y + 1;
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") {
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackRight("+x+","+y+","+newx+","+newy+",false,"+player+")' class='mov'></button>");//make a button that let's the player do: MoveLeft(newx,newy,false,player)
+			} 
+			//if($("#row"+newy+"col"+newx) == pieceof(player)) return;
+			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
+				newx++;
+				if(newx<8){
+					newy++;
+					if(newy>=0){
+						if($("#row"+newy+"col"+newx).html() == "") { 
+							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+							cantake = 1;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
-//CanLeftBack
-//down 1, left 1 == open
-//if false: down 2, left 2 == open
 
-//MoveLeftBack
-//if open: down 1, left 1
-//if them: if open: down 2, left 2; then check if can hit again
-/////////////////////////////////////////////////////////////////////////
-
-//CanRightBack
-//down 1, right 1 == open
-//if false: down 2, right 2 == open
-
-//MoveRightBack
-//if open: down 1, right 1
-//if them: if open: down 2, right 2; then check if can hit again
-/////////////////////////////////////////////////////////////////////////
+//MoveBackRight
+function MoveBackRight(x,y,newx,newy,take,player){
+	//$("#movbut").remove();
+	$("#row"+newy+"col"+newx).html('<button id="2" align="center" onclick="ClearOption(),CanBackLeft('+newx+','+newy+','+player+'),CanBackRight('+newx+','+newy+','+player+')" class="P'+player+'"></button>');
+	$("#row"+y+"col"+x).empty();
+	if(take == true){
+		clearSquare(newx-1,newy-1);
+		pieceLost(opponentof(player));
+	}
+	$("#movbut").remove();
+}
 
 
 

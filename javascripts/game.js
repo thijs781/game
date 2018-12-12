@@ -40,7 +40,7 @@ function ClearOption(){
 }
 
 //CanLeft
-function CanLeft(x,y,player){
+function CanLeft(x,y,player,){
 	var newx = x - 1;
 	if(newx>=0){
 		var newy = y - 1;
@@ -49,29 +49,30 @@ function CanLeft(x,y,player){
 				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveLeft("+x+","+y+","+newx+","+newy+",false,"+player+")' class='mov'></button>");//make a button that let's the player do: MoveLeft(newx,newy,false,player)
 			}
 			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')){//check if can take
-				CanTakeLeft(x,y,player);
+				CanTakeLeft(x,y,x,y,player,"");
 			}
 		}
 	}
 }
 
 //CanTakeLeft
-function CanTakeLeft(x,y,player){
+function CanTakeLeft(startx,starty,x,y,player,prev){
 	var newx = x - 2;
 	var newy = y - 2;
 	if(newx>=0){
 		if(newy>=0){
 			if($("#row"+newy+"col"+newx).html() == "") { 
-				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveLeft("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='"+prev+"MoveLeft("+x+","+y+","+newx+","+newy+",true,"+player+"),clearSquare("+startx+","+starty+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+				prev += "MoveLeft("+x+","+y+","+newx+","+newy+",true,"+player+"),";
 				cantake = 1;
 				var tempx = newx - 1;
 				var tempy = newy - 1;
 				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
-					CanTakeLeft(newx,newy,player);
+					CanTakeLeft(startx,starty,newx,newy,player,prev);
 				}
 				tempx += 2;
 				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take	
-					CanTakeRight(newx,newy,player);
+					CanTakeRight(startx,starty,newx,newy,player,prev);
 				}
 			}
 		}
@@ -102,29 +103,30 @@ function CanRight(x,y,player){
 			} 
 			//if($("#row"+newy+"col"+newx) == pieceof(player)) return;
 			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
-				CanTakeRight(x,y,player);
+				CanTakeRight(x,y,x,y,player,"");
 			}
 		}
 	}
 }
 
 //CanTakeRight
-function CanTakeRight(x,y,player){
+function CanTakeRight(startx,starty,x,y,player,prev){
 	var newx = x + 2;
 	var newy = y - 2;
 	if(newx>=0){
 		if(newy>=0){
 			if($("#row"+newy+"col"+newx).html() == "") { 
-				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>");
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='"+prev+"MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>");
+				prev += "MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+"),";
 				cantake = 1;
 				var tempx = newx - 1;
 				var tempy = newy - 1;
 				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  
-					CanTakeLeft(newx,newy,player);
+					CanTakeLeft(startx,starty,newx,newy,player,prev);
 				}
 				tempx += 2;
 				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) { 	
-					CanTakeRight(newx,newy,player);
+					CanTakeRight(startx,starty,newx,newy,player,prev);
 				}
 			}
 		}
@@ -147,7 +149,6 @@ function MoveRight(x,y,newx,newy,take,player){
 
 
 
-
 //CanBackLeft
 function CanBackLeft(x,y,player){
 	var newx = x - 1;
@@ -159,15 +160,30 @@ function CanBackLeft(x,y,player){
 			}
 
 			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')){//check if can take
-				newx--;
-				if(newx>=0){
-					newy++;
-					if(newy>=0){
-						if($("#row"+newy+"col"+newx).html() == "") { 
-							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackLeft("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
-							cantake = 1;
-						}
-					}
+				CanTakeBackLeft(x,y,x,y,player,"");
+			}
+		}
+	}
+}
+
+//CanTakeBackLeft
+function CanTakeBackLeft(startx,starty,x,y,player,prev){
+	var newx = x - 2;
+	var newy = y + 2;
+	if(newx>=0){
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") { 
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='"+prev+"MoveBackLeft("+x+","+y+","+newx+","+newy+",true,"+player+"),clearSquare("+startx+","+starty+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
+				prev += "MoveBackLeft("+x+","+y+","+newx+","+newy+",true,"+player+"),";
+				cantake = 1;
+				var tempx = newx - 1;
+				var tempy = newy + 1;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
+					CanTakeBackLeft(startx,starty,newx,newy,player,prev);
+				}
+				tempx += 2;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take	
+					CanTakeBackRight(startx,starty,newx,newy,player,prev);
 				}
 			}
 		}
@@ -199,21 +215,35 @@ function CanBackRight(x,y,player){
 			} 
 			//if($("#row"+newy+"col"+newx) == pieceof(player)) return;
 			if($("#row"+newy+"col"+newx).html().includes('class="P'+opponentof(player)+'"')) {  //check if can take
-				newx++;
-				if(newx<8){
-					newy++;
-					if(newy>=0){
-						if($("#row"+newy+"col"+newx).html() == "") { 
-							$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='MoveBackRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>"); //make a button that let's the player do: MoveLeft(newx,newy,true,player)
-							cantake = 1;
-						}
-					}
-				}
+				CanTakeBackRight(x,y,x,y,player,"");
 			}
 		}
 	}
 }
 
+//CanTakeBackRight
+function CanTakeBackRight(startx,starty,x,y,player,prev){
+	var newx = x + 2;
+	var newy = y + 2;
+	if(newx>=0){
+		if(newy>=0){
+			if($("#row"+newy+"col"+newx).html() == "") { 
+				$("#row"+newy+"col"+newx).html("<button id='movbut' align='center' onclick='"+prev+"MoveBackRight("+x+","+y+","+newx+","+newy+",true,"+player+")' class='mov'></button>");
+				prev += "MoveRight("+x+","+y+","+newx+","+newy+",true,"+player+"),";
+				cantake = 1;
+				var tempx = newx - 1;
+				var tempy = newy + 1;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) {  
+					CanTakeBackLeft(startx,starty,newx,newy,player,prev);
+				}
+				tempx += 2;
+				if($("#row"+tempy+"col"+tempx).html().includes('class="P'+opponentof(player)+'"')) { 	
+					CanTakeBackRight(startx,starty,newx,newy,player,prev);
+				}
+			}
+		}
+	}
+}
 
 //MoveBackRight
 function MoveBackRight(x,y,newx,newy,take,player){
